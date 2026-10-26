@@ -1,0 +1,36 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">Cần tư vấn chọn đàn, kiểm tra đơn hàng hay bảo hành? Hãy gửi tin nhắn cho NĂM CAM.</p>
+  {{ page.content }}
+
+  <div class="nc-cards3">
+    {%- comment -%} Sửa số điện thoại / giờ làm việc tại đây {%- endcomment -%}
+    <div class="nc-info-card"><h3>Hotline</h3><p>0900 000 000<br>8:30 – 19:00 hằng ngày</p></div>
+    <div class="nc-info-card"><h3>Theo dõi đơn hàng</h3><p><a href="/pages/order-tracking">Tra cứu giao hàng →</a></p></div>
+    <div class="nc-info-card"><h3>Tài khoản</h3><p><a href="/account">Đơn hàng của tôi</a><br><a href="/account/login#recover">Quên mật khẩu</a></p></div>
+  </div>
+
+  <h2>Câu hỏi thường gặp</h2>
+  <div class="nc-faq">
+    <details><summary>Làm sao chọn nhạc cụ phù hợp?</summary><p>Dùng <a href="/pages/tro-ly-ai">Trợ lý AI</a> hoặc <a href="/pages/dat-lich">đặt lịch</a> để thử đàn trực tiếp.</p></details>
+    <details><summary>Tôi có thể đổi trả không?</summary><p>Có, khi sản phẩm lỗi do nhà sản xuất. Vui lòng liên hệ trong thời hạn đổi trả của cửa hàng.</p></details>
+    <details><summary>Bảo hành như thế nào?</summary><p>Theo chính sách của hãng. Xem thêm dịch vụ <a href="/pages/bao-duong">bảo dưỡng định kỳ</a>.</p></details>
+    <details><summary>Khi nào sản phẩm hết hàng sẽ có lại?</summary><p>Hãy gửi yêu cầu "Báo khi có hàng" ở trang sản phẩm hoặc đăng ký nhận thông báo ở trang chủ.</p></details>
+  </div>
+
+  <h2>Gửi tin nhắn</h2>
+  {% form 'contact', id: 'nc-support-form' %}
+    {% include 'nc-form-result' %}
+    <div class="nc-form">
+      <input type="hidden" name="contact[Loại phản hồi]" value="HỖ TRỢ KHÁCH HÀNG">
+      <div class="nc-form-row">
+        <div><label for="sp-name">Họ và tên</label><input type="text" id="sp-name" name="contact[name]" required value="{% if customer %}{{ customer.name }}{% endif %}"></div>
+        <div><label for="sp-email">Email</label><input type="email" id="sp-email" name="contact[email]" required value="{% if customer %}{{ customer.email }}{% endif %}"></div>
+      </div>
+      <div><label for="sp-phone">Số điện thoại (không bắt buộc)</label><input type="tel" id="sp-phone" name="contact[Số điện thoại]"></div>
+      <div><label for="sp-subject">Chủ đề</label><input type="text" id="sp-subject" name="contact[Chủ đề]" data-prefill="subject"></div>
+      <div><label for="sp-body">Nội dung</label><textarea id="sp-body" name="contact[body]" required></textarea></div>
+      <div><button type="submit" class="nc-btn nc-btn-primary">Gửi</button></div>
+    </div>
+  {% endform %}
+</div>

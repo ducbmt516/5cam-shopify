@@ -1,0 +1,7 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">Tải một đoạn âm thanh lên để AI nhận dạng nhạc cụ, hoặc chọn những bài hát bạn thích (bấm <b>+</b>). Hệ thống sẽ gợi ý nhạc cụ và sản phẩm phù hợp trong cửa hàng.</p>
+  {%- comment -%} Chủ shop: mỗi dòng trong nội dung trang = 1 bài hát (xem HUONG_DAN.md mục 14). Khung này bị ẩn, chỉ để web đọc. {%- endcomment -%}
+  <div id="ml-extra" hidden>{{ page.content }}</div>
+  <div id="nc-melody-page"></div>
+</div>

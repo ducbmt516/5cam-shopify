@@ -1,0 +1,52 @@
+<div class="nc-page">
+  <h1>Giỏ hàng</h1>
+
+  {% if cart.item_count == 0 %}
+    <div class="nc-empty">
+      Giỏ hàng của bạn đang trống.<br><br>
+      <a class="nc-btn nc-btn-primary" href="/collections/all">Tiếp tục mua sắm</a>
+    </div>
+  {% else %}
+    <form action="/cart" method="post" id="cart">
+      <div class="cart-head">
+        <span>Sản phẩm</span><span>Đơn giá</span><span>Số lượng</span><span>Thành tiền</span>
+      </div>
+
+      {% for item in cart.items %}
+        <div class="cart-row">
+          <div class="cart-prod">
+            <a class="cart-img" href="{{ item.url }}">
+              {% if item.image %}<img src="{{ item.image | img_url: '400x400' }}" alt="{{ item.title | escape }}" loading="lazy">{% endif %}
+            </a>
+            <div>
+              <a class="cart-name" href="{{ item.url }}">{{ item.product.title }}</a>
+              {% unless item.variant.title == 'Default Title' %}<div class="cart-variant">{{ item.variant.title }}</div>{% endunless %}
+              <a class="cart-remove" href="/cart/change?line={{ forloop.index }}&quantity=0">Xoá</a>
+            </div>
+          </div>
+          <div class="cart-price" data-label="Đơn giá">{{ item.price | money }}</div>
+          <div class="cart-qty" data-label="Số lượng">
+            <div class="pd-qty">
+              <button type="button" onclick="var i=this.parentNode.querySelector('input');i.value=Math.max(0,(+i.value||1)-1)" aria-label="Giảm">&minus;</button>
+              <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Số lượng">
+              <button type="button" onclick="var i=this.parentNode.querySelector('input');i.value=(+i.value||0)+1" aria-label="Tăng">+</button>
+            </div>
+          </div>
+          <div class="cart-total" data-label="Thành tiền">{{ item.line_price | money }}</div>
+        </div>
+      {% endfor %}
+
+      <div class="cart-foot">
+        <a class="nc-btn nc-btn-ghost" href="/collections/all">&larr; Tiếp tục mua sắm</a>
+        <div class="cart-sum">
+          <div class="cart-sum-line">Tạm tính <strong>{{ cart.total_price | money }}</strong></div>
+          <p>Phí vận chuyển và mã giảm giá được tính ở bước thanh toán.</p>
+          <div class="cart-btns">
+            <button type="submit" name="update" class="nc-btn nc-btn-ghost">Cập nhật giỏ</button>
+            <button type="submit" name="checkout" class="nc-btn nc-btn-primary">Thanh toán</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+</div>

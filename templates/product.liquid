@@ -1,0 +1,220 @@
+{%- assign current = product.selected_or_first_available_variant -%}
+{%- assign has_variants = false -%}
+{%- if product.variants.size > 1 or product.variants.first.title != 'Default Title' -%}{%- assign has_variants = true -%}{%- endif -%}
+
+{%- comment -%} Đánh giá: đọc từ metafield JSON "custom.reviews" (xem HUONG_DAN.md) {%- endcomment -%}
+{%- assign reviews = product.metafields.custom.reviews.value -%}
+{%- assign review_count = reviews.size | default: 0 -%}
+{%- assign review_sum = 0 -%}
+{%- for r in reviews -%}{%- assign review_sum = review_sum | plus: r.rating -%}{%- endfor -%}
+
+<div class="pd" data-pd>
+
+  {%- comment -%} ============ GALLERY (giống ảnh 2: ảnh lớn + mũi tên + dải ảnh nhỏ) ============ {%- endcomment -%}
+  <div class="pd-gallery">
+    <div class="pd-stage" data-stage>
+      {% for image in product.images %}
+        <img class="pd-slide{% if forloop.first %} is-active{% endif %}"
+             data-image-id="{{ image.id }}"
+             src="{{ image | img_url: '900x900' }}"
+             data-large="{{ image | img_url: '1800x1800' }}"
+             alt="{{ image.alt | default: product.title | escape }}"
+             width="900" height="900"
+             {% unless forloop.first %}loading="lazy"{% endunless %}>
+      {% else %}
+        <div class="nc-empty">Chưa có hình ảnh</div>
+      {% endfor %}
+      <button type="button" class="pd-arrow pd-prev" aria-label="Ảnh trước">&#8249;</button>
+      <button type="button" class="pd-arrow pd-next" aria-label="Ảnh sau">&#8250;</button>
+      <button type="button" class="nc-icon-btn pd-zoom-btn" aria-label="Phóng to">&#128269;</button>
+      <span class="pd-counter" data-counter></span>
+    </div>
+    {% if product.images.size > 1 %}
+      <div class="pd-thumbs">
+        {% for image in product.images %}
+          <button type="button" class="pd-thumb{% if forloop.first %} is-active{% endif %}" aria-label="Ảnh {{ forloop.index }}">
+            <img src="{{ image | img_url: '200x200' }}" alt="" loading="lazy">
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  {%- comment -%} ============ THÔNG TIN + MUA HÀNG ============ {%- endcomment -%}
+  <div class="pd-info">
+    {% if product.vendor != blank %}<p class="pd-vendor">Hãng: {{ product.vendor | link_to_vendor }}</p>{% endif %}
+    <h1 class="pd-title">{{ product.title }}</h1>
+
+    <p class="pd-rating-line">
+      {% if review_count > 0 %}
+        {%- assign avg = review_sum | times: 1.0 | divided_by: review_count -%}
+        <span class="pd-stars">{% for i in (1..5) %}{% if i <= avg %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>
+        {{ avg | round: 1 }}/5 · <a href="#reviews" data-open-tab="reviews">{{ review_count }} đánh giá</a>
+      {% else %}
+        <a href="#reviews" data-open-tab="reviews">Chưa có đánh giá — hãy là người đầu tiên</a>
+      {% endif %}
+    </p>
+
+    <form action="/cart/add" method="post" id="nc-add-form">
+      <div class="pd-price-row">
+        <span class="pd-price" data-price>{{ current.price | money }}</span>
+        <span class="pd-compare" data-compare{% unless current.compare_at_price > current.price %} style="display:none"{% endunless %}>{% if current.compare_at_price > current.price %}{{ current.compare_at_price | money }}{% endif %}</span>
+        <span class="pd-save" data-save style="display:none"></span>
+      </div>
+
+      {%- comment -%} Tồn kho {%- endcomment -%}
+      <span class="pd-stock" data-stock>{% if current.available %}Còn hàng{% else %}Hết hàng{% endif %}</span>
+
+      <div class="pd-field"{% unless has_variants %} style="display:none"{% endunless %}>
+        <label for="nc-variant">Phiên bản</label>
+        <select id="nc-variant" name="id">
+          {% for variant in product.variants %}
+            {%- assign v_off = '' -%}
+            {%- if variant.compare_at_price > variant.price -%}
+              {%- assign v_off = variant.compare_at_price | minus: variant.price | times: 100 | divided_by: variant.compare_at_price -%}
+            {%- endif -%}
+            <option value="{{ variant.id }}"
+              {% if variant == current %}selected="selected"{% endif %}
+              {% unless variant.available %}data-soldout="true"{% endunless %}
+              data-price="{{ variant.price | money | escape }}"
+              data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+              data-save="{{ v_off }}"
+              data-available="{{ variant.available }}"
+              data-managed="{% if variant.inventory_management %}true{% else %}false{% endif %}"
+              data-stock="{{ variant.inventory_quantity }}"
+              data-deny="{% if variant.inventory_policy == 'deny' %}true{% else %}false{% endif %}"
+              data-image-id="{{ variant.featured_image.id }}">
+              {{ variant.title }}{% unless variant.available %} — Hết hàng{% endunless %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="pd-buy-row">
+        <div class="pd-qty">
+          <button type="button" data-qty-minus aria-label="Giảm">&minus;</button>
+          <input type="number" name="quantity" value="1" min="1" data-qty aria-label="Số lượng">
+          <button type="button" data-qty-plus aria-label="Tăng">+</button>
+        </div>
+        <button type="submit" name="add" class="nc-btn nc-btn-primary" data-add><span data-text>Thêm vào giỏ</span></button>
+      </div>
+      <div class="pd-buy-row">
+        <button type="submit" name="checkout" class="nc-btn nc-btn-dark" style="flex:1 1 200px" data-buy>Mua ngay</button>
+        <a href="/collections/all" class="nc-btn nc-btn-ghost" style="flex:1 1 160px">Tiếp tục mua sắm</a>
+      </div>
+    </form>
+
+    {%- comment -%}
+      MẪU ÂM THANH: Settings > Custom data > Products > thêm metafield "custom.sound_url" (Single line text),
+      dán link file mp3 (upload ở Settings > Files > copy link). Có link là nút nghe thử tự hiện.
+    {%- endcomment -%}
+    {%- assign sound_url = product.metafields.custom.sound_url.value -%}
+    {%- if sound_url.url -%}{%- assign sound_url = sound_url.url -%}{%- endif -%}
+    {% if sound_url != blank %}
+      <div class="nc-sound">
+        <button type="button" class="nc-play" data-nc-play="{{ sound_url }}" aria-label="Nghe thử">&#9654;</button>
+        <div class="nc-sound-meta">
+          <span class="nc-sound-title">🔊 Nghe thử âm thanh</span>
+          <div class="nc-sound-bar"><i></i></div>
+          <span class="nc-sound-time">0:00 / 0:00</span>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="pd-secondary">
+      <button type="button" class="nc-btn nc-btn-ghost nc-btn-small" data-nc-wish="{{ product.handle }}"><span>&#9825;</span>&nbsp;<span data-label>Yêu thích</span></button>
+      <button type="button" class="nc-btn nc-btn-ghost nc-btn-small" data-nc-compare="{{ product.handle }}"><span data-label>So sánh</span></button>
+      <a class="nc-btn nc-btn-ghost nc-btn-small" href="/pages/dat-lich?product={{ product.handle }}">Đặt lịch xem đàn</a>
+    </div>
+
+    {%- comment -%} CHO THUÊ NHẠC CỤ: gắn tag "cho-thue" cho sản phẩm. Giá thuê/ngày = metafield custom.rental_price {%- endcomment -%}
+    {% if product.tags contains 'cho-thue' %}
+      <div class="pd-box">
+        <strong>Có cho thuê sản phẩm này.</strong>
+        {% if product.metafields.custom.rental_price.value != blank %}Giá thuê: <strong>{{ product.metafields.custom.rental_price.value }} / ngày</strong>.{% endif %}
+        <br><a href="/pages/cho-thue?product={{ product.handle }}">Gửi yêu cầu thuê →</a>
+      </div>
+    {% endif %}
+
+    {% unless current.available %}
+      <div class="pd-box">
+        Sản phẩm tạm hết hàng. <a href="/pages/ho-tro?subject={{ 'Báo khi có hàng: ' | append: product.title | url_encode }}">Báo cho tôi khi có hàng →</a>
+      </div>
+    {% endunless %}
+
+    <ul class="pd-perks">
+      <li>✔ Chính hãng — kiểm tra đàn trước khi giao</li>
+      <li>✔ Bảo dưỡng định kỳ: <a href="/pages/bao-duong">xem dịch vụ</a></li>
+      <li>✔ Chưa biết chọn đàn nào? <a href="/pages/tro-ly-ai">Hỏi trợ lý AI</a> hoặc <a href="/pages/ho-tro">nhắn tư vấn</a></li>
+    </ul>
+  </div>
+
+  {%- comment -%} ============ TABS: MÔ TẢ / CHÍNH SÁCH / ĐÁNH GIÁ ============ {%- endcomment -%}
+  <div class="pd-tabs">
+    <div class="pd-tab-nav">
+      <button type="button" data-tab="desc" class="is-active">Mô tả sản phẩm</button>
+      <button type="button" data-tab="policy">Bảo hành &amp; giao hàng</button>
+      <button type="button" data-tab="reviews" id="reviews">Đánh giá ({{ review_count }})</button>
+    </div>
+
+    <div class="pd-tab-panel is-active" id="tab-desc">
+      <table class="pd-specs">
+        {% if product.vendor != blank %}<tr><th>Thương hiệu</th><td>{{ product.vendor }}</td></tr>{% endif %}
+        {% if product.type != blank %}<tr><th>Loại</th><td>{{ product.type }}</td></tr>{% endif %}
+        {% if current.sku != blank %}<tr><th>Mã SKU</th><td>{{ current.sku }}</td></tr>{% endif %}
+      </table>
+      {% if product.description != blank %}<div class="pd-desc">{{ product.description }}</div>{% else %}<p class="rv-empty">Sản phẩm chưa có mô tả.</p>{% endif %}
+    </div>
+
+    <div class="pd-tab-panel" id="tab-policy">
+      {%- comment -%} Sửa nội dung chính sách tại đây {%- endcomment -%}
+      <p><strong>Bảo hành:</strong> theo chính sách của hãng và NĂM CAM (liên hệ để biết thời hạn cụ thể từng sản phẩm).</p>
+      <p><strong>Đổi trả:</strong> hỗ trợ đổi trả khi sản phẩm lỗi do nhà sản xuất.</p>
+      <p><strong>Giao hàng:</strong> giao toàn quốc, đóng gói chuyên dụng cho nhạc cụ. Theo dõi đơn tại <a href="/pages/order-tracking">trang theo dõi giao hàng</a>.</p>
+      <p><strong>Sau bán hàng:</strong> <a href="/pages/bao-duong">bảo dưỡng định kỳ</a> · <a href="/pages/ho-tro">hỗ trợ khách hàng</a>.</p>
+    </div>
+
+    <div class="pd-tab-panel" id="tab-reviews">
+      {% if review_count > 0 %}
+        <div class="rv-summary">
+          <div class="rv-avg">{{ avg | round: 1 }}</div>
+          <div><span class="pd-stars">{% for i in (1..5) %}{% if i <= avg %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span><br>{{ review_count }} đánh giá</div>
+        </div>
+        {% for r in reviews %}
+          <div class="rv-item">
+            <div class="rv-item-head">
+              <strong>{{ r.name | escape }}</strong>
+              <span class="pd-stars">{% for i in (1..5) %}{% if i <= r.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}</span>
+              {% if r.date %}<span class="rv-date">{{ r.date | escape }}</span>{% endif %}
+            </div>
+            <p>{{ r.text | escape }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="rv-empty">Chưa có đánh giá nào cho sản phẩm này.</p>
+      {% endif %}
+
+      <h2 style="font-size:18px;margin:26px 0 0">Viết đánh giá của bạn</h2>
+      {% form 'contact', id: 'nc-review-form' %}
+        {% include 'nc-form-result' %}
+        <div class="nc-form">
+          <input type="hidden" name="contact[Loại phản hồi]" value="ĐÁNH GIÁ SẢN PHẨM">
+          <input type="hidden" name="contact[Sản phẩm]" value="{{ product.title | escape }} ({{ product.url }})">
+          <div class="nc-form-row">
+            <div><label for="rv-name">Tên của bạn</label><input type="text" id="rv-name" name="contact[name]" required value="{% if customer %}{{ customer.name }}{% endif %}"></div>
+            <div><label for="rv-email">Email</label><input type="email" id="rv-email" name="contact[email]" required value="{% if customer %}{{ customer.email }}{% endif %}"></div>
+          </div>
+          <div>
+            <label for="rv-rating">Số sao</label>
+            <select id="rv-rating" name="contact[Số sao]">
+              <option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
+            </select>
+          </div>
+          <div><label for="rv-body">Nhận xét</label><textarea id="rv-body" name="contact[body]" required></textarea></div>
+          <div><button type="submit" class="nc-btn nc-btn-dark">Gửi đánh giá</button></div>
+          <p style="font-size:12px;color:#766456;margin:0">Đánh giá sẽ được NĂM CAM duyệt trước khi hiển thị.</p>
+        </div>
+      {% endform %}
+    </div>
+  </div>
+</div>

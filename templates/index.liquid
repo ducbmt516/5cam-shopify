@@ -1,0 +1,48 @@
+<div class="homepage-products">
+
+  <div class="nc-section-title">
+    <h2>Tất cả nhạc cụ</h2>
+    <a href="/collections/all">Xem cửa hàng →</a>
+  </div>
+
+  <div class="homepage-toolbar">
+    <label for="HomeProductSort">Sắp xếp sản phẩm:</label>
+    <select id="HomeProductSort" onchange="if(this.value){window.location.href=this.value;}">
+      <option value="/collections/all?sort_by=relevance">Mức độ liên quan</option>
+      <option value="/collections/all?sort_by=title-ascending">Tên sản phẩm: A–Z</option>
+      <option value="/collections/all?sort_by=title-descending">Tên sản phẩm: Z–A</option>
+      <option value="/collections/all?sort_by=price-ascending">Giá: Thấp đến cao</option>
+      <option value="/collections/all?sort_by=price-descending">Giá: Cao đến thấp</option>
+      <option value="/collections/all?sort_by=created-descending">Sản phẩm mới nhất</option>
+    </select>
+  </div>
+
+  {% paginate collections.all.products by 12 %}
+    <div class="nc-grid">
+      {% for product in collections.all.products %}
+        {% include 'product-card' %}
+      {% endfor %}
+    </div>
+
+    {% if paginate.pages > 1 %}
+  <nav class="nc-pager" aria-label="Phân trang">
+    {% if paginate.previous %}<a class="nc-btn nc-btn-ghost nc-btn-small" href="{{ paginate.previous.url }}">&larr; Trang trước</a>{% else %}<span class="nc-btn nc-btn-small is-disabled">&larr; Trang trước</span>{% endif %}
+    <span class="nc-pager-info">Trang <b>{{ paginate.current_page }}</b> / {{ paginate.pages }}</span>
+    {% if paginate.next %}<a class="nc-btn nc-btn-dark nc-btn-small" href="{{ paginate.next.url }}">Trang sau &rarr;</a>{% else %}<span class="nc-btn nc-btn-small is-disabled">Trang sau &rarr;</span>{% endif %}
+  </nav>
+{% endif %}
+
+{% endpaginate %}
+
+  {%- comment -%} THÔNG BÁO HÀNG MỚI: đăng ký email -> khách được lưu vào Customers với tag "thong-bao-hang-moi" {%- endcomment -%}
+  <div class="nc-newsletter">
+    <strong>Nhận thông báo khi có nhạc cụ mới &amp; ưu đãi đặc biệt</strong>
+    {% form 'customer' %}
+      <input type="hidden" name="contact[tags]" value="thong-bao-hang-moi">
+      <input type="email" name="contact[email]" placeholder="Email của bạn" required aria-label="Email">
+      <button type="submit" class="nc-btn nc-btn-dark nc-btn-small">Đăng ký</button>
+      {% if form.posted_successfully? %}<div class="nc-alert ok">Đã đăng ký! Bạn sẽ nhận thông báo hàng mới từ NĂM CAM.</div>{% endif %}
+      {% if form.errors %}<div class="nc-alert err">{{ form.errors | default_errors }}</div>{% endif %}
+    {% endform %}
+  </div>
+</div>

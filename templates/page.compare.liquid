@@ -1,0 +1,19 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">So sánh tối đa 3 sản phẩm: chênh lệch giá, thông tin, nghe thử âm thanh và so sánh nốt nhạc.</p>
+  <hr class="nc-rule">
+  {%- comment -%} Bản đồ handle -> link mp3 (metafield custom.sound_url) để trang so sánh cho nghe và phân tích nốt nhạc {%- endcomment -%}
+  {% paginate collections.all.products by 250 %}
+  <script>
+    window.NC_SOUNDS = {
+      {%- for p in collections.all.products -%}
+        {%- assign su = p.metafields.custom.sound_url.value -%}
+        {%- if su.url -%}{%- assign su = su.url -%}{%- endif -%}
+        {%- if su != blank -%}{{ p.handle | json }}: {{ su | json }},{%- endif -%}
+      {%- endfor -%}
+    };
+  </script>
+  {% endpaginate %}
+  <div id="nc-compare"></div>
+  <p style="margin-top:16px"><button type="button" class="nc-btn nc-btn-ghost nc-btn-small" data-nc-compare-clear>Xoá danh sách so sánh</button></p>
+</div>

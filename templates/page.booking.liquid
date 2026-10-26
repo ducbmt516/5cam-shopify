@@ -1,0 +1,38 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">Đặt lịch hẹn trực tiếp tại cửa hàng để xem, thử đàn hoặc được tư vấn. Chúng tôi sẽ xác nhận lại qua điện thoại / email.</p>
+  {{ page.content }}
+  {% form 'contact', id: 'nc-booking-form' %}
+    {% include 'nc-form-result' %}
+    <div class="nc-form">
+      <input type="hidden" name="contact[Loại phản hồi]" value="ĐẶT LỊCH TRỰC TIẾP">
+      <div class="nc-form-row">
+        <div><label for="bk-name">Họ và tên</label><input type="text" id="bk-name" name="contact[name]" required value="{% if customer %}{{ customer.name }}{% endif %}"></div>
+        <div><label for="bk-phone">Số điện thoại</label><input type="tel" id="bk-phone" name="contact[Số điện thoại]" required></div>
+      </div>
+      <div><label for="bk-email">Email</label><input type="email" id="bk-email" name="contact[email]" required value="{% if customer %}{{ customer.email }}{% endif %}"></div>
+      <div class="nc-form-row">
+        <div><label for="bk-date">Ngày hẹn</label><input type="date" id="bk-date" name="contact[Ngày hẹn]" required data-min-today></div>
+        <div>
+          <label for="bk-time">Khung giờ</label>
+          <select id="bk-time" name="contact[Khung giờ]">
+            <option>09:00 - 10:00</option><option>10:00 - 11:00</option><option>11:00 - 12:00</option>
+            <option>13:30 - 14:30</option><option>14:30 - 15:30</option><option>15:30 - 16:30</option><option>16:30 - 17:30</option><option>18:00 - 19:00</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="bk-type">Mục đích</label>
+        <select id="bk-type" name="contact[Mục đích]">
+          <option>Xem và thử đàn</option><option>Tư vấn chọn nhạc cụ</option><option>Nhận hàng đã đặt</option><option>Khác</option>
+        </select>
+      </div>
+      <div>
+        <label for="bk-product">Sản phẩm quan tâm (nếu có)</label>
+        <input type="text" id="bk-product" name="contact[Sản phẩm quan tâm]" data-prefill="product" placeholder="Tên hoặc mã sản phẩm">
+      </div>
+      <div><label for="bk-body">Ghi chú</label><textarea id="bk-body" name="contact[body]" placeholder="Bạn muốn chúng tôi chuẩn bị gì?"></textarea></div>
+      <div><button type="submit" class="nc-btn nc-btn-primary">Đặt lịch</button></div>
+    </div>
+  {% endform %}
+</div>

@@ -1,0 +1,67 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">Nhạc cụ được chăm sóc đúng định kỳ sẽ giữ âm thanh ổn định và bền hơn nhiều năm.</p>
+  {{ page.content }}
+
+  <h2>Gói dịch vụ</h2>
+  {%- comment -%} Sửa tên gói / mô tả / giá tại đây {%- endcomment -%}
+  <div class="nc-cards3">
+    <div class="nc-info-card"><h3>Cơ bản</h3><p>Vệ sinh, kiểm tra tổng thể, lên dây / chỉnh âm cơ bản.</p><div class="nc-price-tag">Liên hệ báo giá</div></div>
+    <div class="nc-info-card"><h3>Nâng cao</h3><p>Cơ bản + chỉnh cần, thay phụ kiện hao mòn (dây, da trống, má phím...).</p><div class="nc-price-tag">Liên hệ báo giá</div></div>
+    <div class="nc-info-card"><h3>Đại tu</h3><p>Kiểm tra sâu, xử lý hư hỏng, phục hồi âm thanh và ngoại quan.</p><div class="nc-price-tag">Liên hệ báo giá</div></div>
+  </div>
+
+  <h2>Chu kỳ bảo dưỡng khuyến nghị</h2>
+  <div class="nc-scroll-x">
+    <table class="nc-table">
+      <tr><th>Nhạc cụ</th><th>Chu kỳ</th><th>Hạng mục chính</th></tr>
+      <tr><td>Guitar</td><td>6 tháng</td><td>Thay dây, vệ sinh cần đàn, chỉnh độ cong cần</td></tr>
+      <tr><td>Piano cơ</td><td>6–12 tháng</td><td>Lên dây, chỉnh cơ phím, vệ sinh bên trong</td></tr>
+      <tr><td>Piano điện / Keyboard</td><td>12 tháng</td><td>Kiểm tra phím, pedal, cổng kết nối</td></tr>
+      <tr><td>Trống</td><td>3–6 tháng</td><td>Thay da trống, siết phần cứng, kiểm tra cymbal</td></tr>
+      <tr><td>Ukulele / Violin</td><td>6 tháng</td><td>Thay dây, kiểm tra ngựa đàn, chỉnh cầu đàn</td></tr>
+    </table>
+  </div>
+
+  <h2>Tính ngày bảo dưỡng tiếp theo</h2>
+  <div class="nc-form-row" style="max-width:640px">
+    <div>
+      <label for="mt-instrument" style="display:block;font-size:13px;margin-bottom:5px">Nhạc cụ</label>
+      <select id="mt-instrument" style="width:100%;padding:10px">
+        <option data-months="6">Guitar</option><option data-months="9">Piano cơ</option><option data-months="12">Piano điện / Keyboard</option>
+        <option data-months="4">Trống</option><option data-months="6">Ukulele / Violin</option>
+      </select>
+    </div>
+    <div>
+      <label for="mt-last" style="display:block;font-size:13px;margin-bottom:5px">Lần bảo dưỡng gần nhất</label>
+      <input type="date" id="mt-last" style="width:100%;padding:9px;box-sizing:border-box">
+    </div>
+  </div>
+  <p id="mt-next" style="font-weight:700;color:#a96127"></p>
+
+  <h2>Đặt lịch bảo dưỡng</h2>
+  {% form 'contact', id: 'nc-maintenance-form' %}
+    {% include 'nc-form-result' %}
+    <div class="nc-form">
+      <input type="hidden" name="contact[Loại phản hồi]" value="ĐẶT LỊCH BẢO DƯỠNG">
+      <div class="nc-form-row">
+        <div><label for="mf-name">Họ và tên</label><input type="text" id="mf-name" name="contact[name]" required value="{% if customer %}{{ customer.name }}{% endif %}"></div>
+        <div><label for="mf-phone">Số điện thoại</label><input type="tel" id="mf-phone" name="contact[Số điện thoại]" required></div>
+      </div>
+      <div><label for="mf-email">Email</label><input type="email" id="mf-email" name="contact[email]" required value="{% if customer %}{{ customer.email }}{% endif %}"></div>
+      <div class="nc-form-row">
+        <div><label for="mf-inst">Nhạc cụ</label><input type="text" id="mf-inst" name="contact[Nhạc cụ]" data-prefill="product" required placeholder="VD: Guitar Yamaha F310"></div>
+        <div>
+          <label for="mf-pack">Gói dịch vụ</label>
+          <select id="mf-pack" name="contact[Gói dịch vụ]"><option>Cơ bản</option><option>Nâng cao</option><option>Đại tu</option></select>
+        </div>
+      </div>
+      <div class="nc-form-row">
+        <div><label for="mf-date">Ngày mang đến</label><input type="date" id="mf-date" name="contact[Ngày hẹn]" required data-min-today></div>
+        <div><label for="mf-last">Bảo dưỡng gần nhất (nếu nhớ)</label><input type="date" id="mf-last" name="contact[Bảo dưỡng gần nhất]"></div>
+      </div>
+      <div><label for="mf-body">Tình trạng / yêu cầu</label><textarea id="mf-body" name="contact[body]" required placeholder="VD: dây chùng nhanh, cần đàn cong..."></textarea></div>
+      <div><button type="submit" class="nc-btn nc-btn-primary">Gửi yêu cầu bảo dưỡng</button></div>
+    </div>
+  {% endform %}
+</div>

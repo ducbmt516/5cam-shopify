@@ -1,0 +1,7 @@
+{%- comment -%} Hiện thông báo gửi form (dùng bên trong {% form 'contact' %}) {%- endcomment -%}
+{% if form.posted_successfully? %}
+  <div class="nc-alert ok">Cảm ơn bạn! NĂM CAM đã nhận được thông tin và sẽ liên hệ lại sớm nhất.</div>
+{% endif %}
+{% if form.errors %}
+  <div class="nc-alert err">{{ form.errors | default_errors }}</div>
+{% endif %}

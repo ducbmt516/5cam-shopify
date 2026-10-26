@@ -1,0 +1,53 @@
+<div class="nc-page">
+  <h1>{{ page.title }}</h1>
+  <p class="nc-lead">Thuê nhạc cụ theo ngày cho buổi diễn, sự kiện hoặc thời gian học thử. Gắn tag <code>cho-thue</code> cho sản phẩm để hiện ở đây.</p>
+  {{ page.content }}
+
+  {% assign rental_count = 0 %}
+  {% capture rental_cards %}
+    {% for product in collections.all.products %}
+      {% if product.tags contains 'cho-thue' %}
+        {% assign rental_count = rental_count | plus: 1 %}
+        <div class="nc-info-card">
+          <h3><a href="{{ product.url }}" style="color:inherit;text-decoration:none">{{ product.title }}</a></h3>
+          {% if product.metafields.custom.rental_price.value != blank %}<div class="nc-price-tag">{{ product.metafields.custom.rental_price.value }} / ngày</div>{% endif %}
+          <p style="margin-top:8px"><a href="/pages/cho-thue?product={{ product.handle }}">Chọn thuê →</a></p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+  {% if rental_count > 0 %}<div class="nc-cards3">{{ rental_cards }}</div>{% else %}<div class="nc-alert ok">Chưa có sản phẩm nào gắn tag cho-thue. Bạn vẫn có thể gửi yêu cầu bên dưới.</div>{% endif %}
+
+  <h2>Gửi yêu cầu thuê</h2>
+  {% form 'contact', id: 'nc-rental-form' %}
+    {% include 'nc-form-result' %}
+    <div class="nc-form">
+      <input type="hidden" name="contact[Loại phản hồi]" value="THUÊ NHẠC CỤ">
+      <div class="nc-form-row">
+        <div><label for="rt-name">Họ và tên</label><input type="text" id="rt-name" name="contact[name]" required value="{% if customer %}{{ customer.name }}{% endif %}"></div>
+        <div><label for="rt-phone">Số điện thoại</label><input type="tel" id="rt-phone" name="contact[Số điện thoại]" required></div>
+      </div>
+      <div><label for="rt-email">Email</label><input type="email" id="rt-email" name="contact[email]" required value="{% if customer %}{{ customer.email }}{% endif %}"></div>
+      <div>
+        <label for="rt-product">Nhạc cụ muốn thuê</label>
+        <select id="rt-product" name="contact[Nhạc cụ muốn thuê]" data-prefill="product">
+          <option value="">Khác (ghi rõ trong ghi chú)</option>
+          {% for product in collections.all.products %}{% if product.tags contains 'cho-thue' %}
+            <option data-handle="{{ product.handle }}" value="{{ product.title | escape }}">{{ product.title }}</option>
+          {% endif %}{% endfor %}
+        </select>
+      </div>
+      <div class="nc-form-row">
+        <div><label for="rt-from">Ngày bắt đầu thuê</label><input type="date" id="rt-from" name="contact[Ngày bắt đầu]" required data-min-today></div>
+        <div><label for="rt-days">Số ngày thuê</label><input type="number" id="rt-days" name="contact[Số ngày]" min="1" value="1" required></div>
+      </div>
+      <div>
+        <label for="rt-way">Hình thức nhận</label>
+        <select id="rt-way" name="contact[Hình thức nhận]"><option>Nhận tại cửa hàng</option><option>Giao tận nơi</option></select>
+      </div>
+      <div><label for="rt-body">Ghi chú (địa chỉ giao, mục đích sử dụng...)</label><textarea id="rt-body" name="contact[body]"></textarea></div>
+      <p style="font-size:12px;color:#766456;margin:0">Có thể áp dụng tiền đặt cọc / giấy tờ tuỳ thân khi nhận nhạc cụ. Sửa điều khoản này trong templates/page.rental.liquid.</p>
+      <div><button type="submit" class="nc-btn nc-btn-primary">Gửi yêu cầu thuê</button></div>
+    </div>
+  {% endform %}
+</div>

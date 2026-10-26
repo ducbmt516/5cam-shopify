@@ -1,0 +1,25 @@
+<div id="search_page" class="nc-page">
+  <h1>Kết quả tìm kiếm</h1>
+  {% if search.performed %}
+    {% paginate search.results by 12 %}
+      {% if search.results == empty %}
+        <div class="nc-empty">Không tìm thấy kết quả nào cho "{{ search.terms | escape }}".</div>
+      {% else %}
+        <p class="nc-lead">{{ search.results_count }} kết quả cho "{{ search.terms | escape }}"</p>
+        <div class="nc-grid" style="margin-left:0;margin-right:0">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% assign card_product = item %}{% include 'product-card' %}
+            {% else %}
+              <div class="nc-info-card">
+                <h3>{{ item.title | link_to: item.url }}</h3>
+                <p>{{ item.content | strip_html | truncatewords: 30 }}</p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="paginate clearfix">{{ paginate | default_pagination }}</div>
+    {% endpaginate %}
+  {% endif %}
+</div>

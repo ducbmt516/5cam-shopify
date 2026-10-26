@@ -1,0 +1,60 @@
+/* ==========================================================
+   NĂM CAM — audio-separator.css
+   Giao diện công cụ tách âm thanh (dùng tông màu của theme)
+   ========================================================== */
+.audio-separator-wrapper {
+  --sep-ink: var(--nc-ink, #201b18);
+  --sep-accent: var(--nc-orange, #c87932);
+  --sep-line: var(--nc-line, rgba(120, 90, 65, .18));
+  --sep-muted: var(--nc-muted, #766456);
+  --sep-sand: var(--nc-sand, #f5ece2);
+  max-width: 900px; margin: 0 auto; padding: 8px 12px 28px; text-align: left; color: var(--sep-ink);
+}
+.separator-header { text-align: center; margin-bottom: 1.6rem; }
+.separator-title { margin: 0 0 .5rem; font-size: clamp(24px, 3vw, 32px); font-weight: 700; }
+.separator-subtitle { margin: 0; line-height: 1.7; color: var(--sep-muted); }
+.separator-error { max-width: none; margin: 0 0 14px; }
+
+.separator-upload-area {
+  padding: 2.6rem 1.5rem; text-align: center; cursor: pointer; background: rgba(255, 255, 255, .7);
+  border: 2px dashed #c9b6a3; border-radius: 6px; transition: border-color .25s ease, background .25s ease;
+}
+.separator-upload-area:hover, .separator-upload-area:focus-visible, .separator-upload-area.dragover {
+  outline: none; border-color: var(--sep-accent); background: #fff8ef;
+}
+.upload-icon { margin-bottom: .8rem; color: var(--sep-accent); }
+.upload-text { margin: 0 0 .4rem; font-size: 1.1rem; font-weight: 600; }
+.upload-link { color: var(--sep-accent); text-decoration: underline; }
+.upload-hint { margin: 0; font-size: .85rem; color: var(--sep-muted); }
+
+.separator-loading { padding: 2rem 1rem; text-align: center; }
+.loading-spinner {
+  width: 40px; height: 40px; margin: 0 auto 1rem; border: 4px solid rgba(128, 100, 80, .2);
+  border-top-color: var(--sep-accent); border-radius: 50%; animation: sep-spin 1s linear infinite;
+}
+@keyframes sep-spin { to { transform: rotate(360deg); } }
+.progress-bar { width: 100%; max-width: 420px; height: 8px; margin: 1rem auto 0; background: rgba(128, 100, 80, .2); border-radius: 4px; overflow: hidden; }
+.progress-fill { width: 0; height: 100%; background: var(--sep-accent); transition: width .3s ease; }
+
+.results-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+.results-title { margin: 0 0 2px; font-size: 22px; }
+.results-file { margin: 0; font-size: 13px; color: var(--sep-muted); }
+.separator-notice { margin: 0 0 16px; padding: 12px 14px; font-size: 13px; line-height: 1.7; background: var(--sep-sand); border-left: 3px solid var(--sep-accent); }
+
+.stems-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 1.6rem; }
+.stem-card { padding: 14px; background: rgba(255, 255, 255, .9); border: 1px solid var(--sep-line); border-top: 3px solid var(--sep-accent); }
+.stem-card h4 { margin: 0 0 4px; font-size: 16px; }
+.stem-card p { margin: 0 0 10px; font-size: 12px; line-height: 1.6; color: var(--sep-muted); }
+.stem-card audio { display: block; width: 100%; height: 40px; margin-bottom: 8px; }
+.stem-card a { font-size: 12px; font-weight: 700; color: var(--nc-orange-dark, #a96127); }
+.stem-card.is-ai { border-top-color: var(--sep-ink); }
+
+.midi-section { padding: 18px; background: rgba(255, 255, 255, .9); border: 1px solid var(--sep-line); }
+.midi-section h4 { margin: 0 0 4px; font-size: 18px; }
+.midi-stats { margin: 0 0 12px; font-size: 13px; color: var(--sep-muted); }
+.piano-roll-container { margin-bottom: 14px; overflow: hidden; background: #1e1b19; border-radius: 4px; }
+#midiCanvas { display: block; width: 100%; height: 240px; }
+@media (max-width: 600px) { .stems-grid { grid-template-columns: 1fr; } }
+
+/* Thuộc tính hidden luôn thắng các luật display của nút/thẻ */
+.audio-separator-wrapper [hidden] { display: none !important; }

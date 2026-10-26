@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>{{shop.name}} - {{page_title}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  
+    {{ 'style.css'     | asset_url | stylesheet_tag }}
+    
+    {% comment %}
+  // {{ 'prototype/1.6/prototype.js'       | global_asset_url | script_tag }}
+  // {{ 'scriptaculous/1.8.2/scriptaculous.js' | global_asset_url | script_tag }}
+    {% endcomment %}
+
+    {{ 'namcam.css' | asset_url | stylesheet_tag }}
+    {{ 'namcam-extra.css' | asset_url | stylesheet_tag }}
+    {%- comment -%} aiEndpoint: dán URL proxy AI (Cloudflare Worker) vào giữa 2 dấu nháy. Để trống = trợ lý chạy bằng luật có sẵn. {%- endcomment -%}
+    <script>window.NC = { currency: {{ shop.currency | json }}, aiEndpoint: '' };</script>
+    <script src="{{ 'namcam.js' | asset_url }}" defer></script>
+    <script src="{{ 'namcam-extra.js' | asset_url }}" defer></script>
+    
+    {{ content_for_header }}
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&display=swap');
+
+      body, body * { font-family: 'Playfair Display', Georgia, serif !important; }
+      .header span, .header span a { font-family:'Cinzel Decorative','Playfair Display',serif !important; }
+      :root { --cam-orange: #c87932; --cam-ink: #201b18; --cam-cream: #fbf7f1; }
+      html, body { min-height: 100%; }
+      body {
+        margin: 0; padding: 0; color: var(--cam-ink);
+        font-family: 'Playfair Display', Georgia, serif;
+        background: #f7f1eb;
+        position: relative; isolation: isolate;
+      }
+      body::before {
+        content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+        background-image: url("https://cdn.shopify.com/s/files/1/0804/2473/0813/files/image_7d055ac.jpg?v=1792755825");
+        background-repeat: no-repeat; background-position: center; background-size: cover;
+        opacity: .25;
+      }
+      .wrapper, .inner { width: 100%; height: auto; }
+      .main {
+        width: min(1240px, 96vw); box-sizing: border-box; margin: 0 auto;
+        padding: 0 22px 24px; background: rgba(255,252,248,.94);
+        box-shadow: 0 8px 42px rgba(42,28,18,.13);
+      }
+      .header {
+        width: 100%; height: 112px; float: none; margin: 0; position: relative;
+        display: flex; justify-content: center; align-items: center; box-sizing: border-box;
+      }
+      .header span {
+  display: block;
+  margin: 0;
+  text-align: center;
+  font-family: 'Cinzel Decorative', 'Playfair Display', serif;
+  font-size: clamp(38px, 4vw, 56px);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1;
+}
+
+.header .logo-nam,
+.header .logo-cam {
+  display: inline;
+  margin: 0;
+  font-weight: 700;
+}
+
+.header .logo-nam {
+  color: #201b18;
+}
+
+.header .logo-cam {
+  color: #c87932;
+}
+      .header a { text-decoration:none; color:#17120f; }
+      .header .logo-cam { color: var(--cam-orange); }
+      .account-links { position:absolute; top:16px; right:0; z-index:10; display:flex; gap:8px; align-items:center; }
+      .account-links a { display:inline-block; padding:9px 12px; color:#fff; background:#201b18; text-decoration:none;
+        border:1px solid #201b18; border-radius:2px; font:600 11px 'Playfair Display',serif; letter-spacing:.06em; }
+      .account-links a:hover { background:var(--cam-orange); border-color:var(--cam-orange); }
+      .menubar_imges { width:100%; height:auto; float:none; overflow:hidden; display:flex; align-items:flex-start; gap:18px; }
+      .menubar { float:none; padding:0; margin-left: min(17%, 190px); }
+      .menubar_imges ul { font-family:'Playfair Display',serif; }
+      .menubar_imges ul li a { height:auto; }
+      .menubar_imges ul li a:hover { height:auto; background:none; }
+      .menubar_imges ul li a span { height:auto; padding:9px 14px; margin-right:7px; background:#201b18; color:#fff; border:1px solid #201b18; }
+      .menubar_imges ul li a:hover span { background:var(--cam-orange); border-color:var(--cam-orange); }
+      .search_box { float:none; margin:0 0 8px auto; width:230px; display:flex; }
+      .search_box form { display:flex; width:100%; }
+      .search_box input.text { width:calc(100% - 38px); box-sizing:border-box; height:35px; font-family:'Playfair Display',serif; }
+      .search_box .submit { flex:0 0 38px; height:35px; }
+      .main_content { width:100%; display:grid; grid-template-columns:160px minmax(0,1fr) 190px; gap:22px; align-items:start; }
+      .left_side, .middle_side, .right_side { width:auto; min-width:0; float:none; background:transparent; }
+      .product { width:100%; height:auto; float:none; margin:0 0 8px; background:none; }
+      .product::before { content:'BỘ SƯU TẬP'; display:block; padding:7px 9px; text-align:center; color:var(--cam-orange);
+        border-top:1px solid #d8c8b8; border-bottom:1px solid #d8c8b8; font:700 13px 'Playfair Display',serif; letter-spacing:.12em; }
+      .leftmenu { float:none; margin:0; }
+      .leftmenu ul { margin:0; padding:0; font-size:14px; }
+      .leftmenu ul li { list-style:none; text-align:left; margin:0; position:relative; border-bottom:1px solid rgba(120,90,65,.13); }
+      .leftmenu ul li a { display:block; padding:10px 8px; line-height:1.4; color:#2a211b; text-decoration:none; }
+      .leftmenu ul li:hover > a { color:var(--cam-orange); background:#f5ece2; }
+      .collection-submenu { display:none; padding:5px 8px 9px 14px; background:#f8f0e7; }
+      .leftmenu li:hover .collection-submenu, .leftmenu li:focus-within .collection-submenu { display:block; }
+      .collection-submenu a, .collection-submenu span { display:block; padding:5px 3px; font-size:12px; color:#665347; text-decoration:none; }
+      .collection-submenu a:hover { color:var(--cam-orange); }
+      .song { display:none !important; }
+      .products_table { width:100%; border-collapse:separate; border-spacing:12px 16px; }
+      .products_table tr { vertical-align:top; }
+      .products_table td { vertical-align:top; }
+      .products_table .firsts_col, .products_table .last_col {
+        box-sizing:border-box; width:100%; min-width:0; margin:0; padding:10px 10px 14px;
+        background:rgba(255,255,255,.82); border:1px solid rgba(120,90,65,.14);
+        border-radius:48px 48px 12px 12px; overflow:hidden; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      }
+      .products_table .firsts_col:hover, .products_table .last_col:hover {
+        transform:translateY(-5px); border-color:rgba(200,121,50,.65); box-shadow:0 12px 26px rgba(52,33,19,.13);
+      }
+      .product_image { width:100%; height:188px; margin:0; background:transparent; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+      .product_image img { width:100%; height:188px; object-fit:contain; border:0; transition:transform .35s ease; }
+      .products_table .firsts_col:hover .product_image img, .products_table .last_col:hover .product_image img { transform:scale(1.06); }
+      .product_name, .product_price { font-family:'Playfair Display',serif; font-size:14px; line-height:1.45; font-weight:600; text-align:left; margin-top:8px; }
+      .product_name a, .product_price a { color:#2a211b; text-decoration:none; }
+      .product_name a:hover { color:var(--cam-orange); }
+      .product_price { color:var(--cam-orange); margin-top:3px; }
+      .btn-separator-new { display:block; background:#ff007f; color:#fff; padding:15px 10px; font-size:14px; font-weight:bold;
+        text-align:center; border-radius:5px; text-decoration:none; text-transform:uppercase; box-shadow:0 4px 6px rgba(0,0,0,.15); margin-top:10px; transition:background .3s ease; }
+      .btn-separator-new:hover { background:#cc0066; }
+      .footer { width:100%; height:auto; min-height:28px; margin:42px 0 20px; padding:8px 0; background:#201b18; }
+      .footer_text { font-family:'Playfair Display',serif; font-size:11px; text-align:right; color:#fff; margin:5px 10px; }
+      input, button, select, textarea { font-family:'Playfair Display',serif; }
+      .collection-toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:4px 12px 12px; }
+      .collection-toolbar h1 { font-size:25px; font-weight:500; margin:0; }
+      .collection-sort { display:flex; gap:8px; align-items:center; font-size:12px; }
+      .collection-sort select { border:1px solid #d7c4b1; background:#fffaf5; padding:7px; max-width:100%; }
+      .account-shortcuts { margin-top:14px; padding:12px; border:1px solid #e7d9ca; background:rgba(255,255,255,.75); }
+      .account-shortcuts a { display:block; padding:6px 0; color:#594435; font-size:12px; text-decoration:none; }
+      .account-shortcuts a:hover { color:var(--cam-orange); }
+      @media(max-width:900px) {
+        .main { width:100%; padding:0 12px 18px; }
+        .main_content { grid-template-columns:135px minmax(0,1fr); gap:14px; }
+        .right_side { grid-column:2; }
+        .menubar { margin-left:0; }
+        .menubar_imges { flex-wrap:wrap; }
+        .search_box { margin-left:auto; }
+      }
+      @media(max-width:600px) {
+        .header { height:100px; align-items:flex-end; padding-bottom:12px; }
+        .header span { font-size:38px; }
+        .account-links { top:8px; right:0; gap:5px; }
+        .account-links a { padding:6px 7px; font-size:10px; }
+        .main_content { display:block; }
+        .left_side { margin-bottom:18px; }
+        .leftmenu ul { display:flex; flex-wrap:wrap; gap:5px; }
+        .leftmenu ul li { border:1px solid #e3d7ca; }
+        .collection-submenu { position:static; }
+        .menubar_imges { display:block; }
+        .menubar { overflow:visible; }
+        .menubar_imges ul li a span { padding:8px 9px; margin-bottom:5px; }
+        .search_box { width:100%; margin:8px 0; }
+        .products_table { border-spacing:5px; }
+        .product_name, .product_price { font-size:12px; }
+      }
+      
+.homepage-products {
+  padding-top: 18px;
+}
+
+.homepage-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 12px 18px;
+  border-bottom: 1px solid #dfcdbb;
+  padding-bottom: 14px;
+}
+
+.homepage-heading h1 {
+  margin: 0;
+  color: #201b18;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.homepage-heading p {
+  margin: 6px 0 0;
+  color: #766456;
+  font-size: 13px;
+}
+
+.homepage-view-all {
+  color: #a96127;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.homepage-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 12px 12px;
+  font-size: 12px;
+}
+
+.homepage-toolbar select {
+  max-width: 100%;
+  padding: 8px 10px;
+  color: #201b18;
+  background: #fffaf5;
+  border: 1px solid #d7c4b1;
+  border-radius: 3px;
+}
+
+@media (max-width: 600px) {
+  .homepage-heading h1 {
+    font-size: 21px;
+  }
+
+  .homepage-heading {
+    align-items: start;
+  }
+
+  .homepage-toolbar {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+    </style>
+  </head>
+  <body id="page-{{template}}">
+	
+    <div class="wrapper" align="center">
+      <div class="wrapper" align="center">
+        <div class="inner">
+          <div class="main">
+	
+            <div class="header">
+              <span>
+  <a href="/" aria-label="5 CAM trang chủ">
+    <span class="logo-five" role="img" aria-label="5"><svg viewBox="0 0 70 100" aria-hidden="true"><path d="M60 14H30C24 14 20 22 20 32C20 46 60 40 60 66C60 90 24 94 8 80" fill="none" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="logo-cam">CAM</span>
+  </a>
+</span>
+              <div class="account-links">
+                <div class="nc-bell-wrap">
+                  <button type="button" id="nc-bell" class="nc-bell" aria-label="Thông báo khuyến mãi" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a1.5 1.5 0 0 0-1.5 1.5v.6C7.6 4.8 6 7.2 6 10v4l-2 3v1h16v-1l-2-3v-4c0-2.8-1.6-5.2-4.5-5.9v-.6A1.5 1.5 0 0 0 12 2zm-2.2 17a2.2 2.2 0 0 0 4.4 0z"/></svg>
+                    <span class="nc-bell-badge" hidden>0</span>
+                  </button>
+                  <div id="nc-bell-pop" class="nc-bell-pop" hidden></div>
+                  <div id="nc-bell-panel" class="nc-bell-panel" hidden></div>
+                </div>
+                {% if customer %}
+                  <a href="/account">TÀI KHOẢN</a>
+                  <a href="/account/orders">LỊCH SỬ ĐƠN</a>
+                  <a href="/account/logout">ĐĂNG XUẤT</a>
+                {% else %}
+                  <a href="/account/login">ĐĂNG NHẬP</a>
+                  <a href="/account/register">ĐĂNG KÝ</a>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="menubar_imges">
+              <div class="menubar">
+                <ul>
+                  <li><a href="/collections/all" title="CỬA HÀNG"><span>CỬA HÀNG</span></a></li>
+                  <li><a href="{{ pages.contact.url }}" title="LIÊN HỆ"><span>LIÊN HỆ</span></a></li>
+                  <li><a href="/pages/yeu-thich" title="YÊU THÍCH"><span>YÊU THÍCH (<b class="nc-count" data-nc-count="wish">0</b>)</span></a></li>
+                  <li><a href="/pages/so-sanh" title="SO SÁNH"><span>SO SÁNH (<b class="nc-count" data-nc-count="compare">0</b>)</span></a></li>
+                  <li><a href="/cart" title="GIỎ HÀNG"><span>GIỎ HÀNG {% if cart.item_count > 0 %} ({{cart.item_count}}) {% endif %}</span></a> </li>
+                </ul>
+              </div>
+
+              <div class="search_box">
+                <form method="get" action="/search">
+                  <input id="search-input" class="text" type="text" name="q" placeholder="Tìm nhạc cụ..." aria-label="Tìm kiếm" />
+                  <input class="submit" name="submit" value="" type="submit" />
+                </form>
+              </div>
+            </div>
+
+            <div class="main_content">
+	
+              <div class="left_side">
+                <div class="product"></div>
+                <div class="leftmenu">
+                  <ul>
+                    {% for collection in collections %}
+                      {% assign collection_title_downcase = collection.title | downcase %}
+                      {% unless collection.handle == 'frontpage' or collection.handle == 'songs' or collection.handle == 'all' %}
+                        <li>
+                          <a href="{{ collection.url }}" title="{{ collection.title }}">{{ collection.title }}</a>
+                          <div class="collection-submenu">
+                            {% if collection.metafields.custom.subcategories.value != blank %}
+                              {% for subcategory in collection.metafields.custom.subcategories.value %}
+                                <a href="{{ subcategory.url }}">{{ subcategory.title }}</a>
+                              {% endfor %}
+                            {% elsif collection_title_downcase contains 'guitar' %}
+                              <span>Guitar điện</span><span>Guitar acoustic</span><span>Guitar classic</span><span>Guitar bass</span>
+                            {% elsif collection_title_downcase contains 'piano' %}
+                              <span>Piano cơ</span><span>Piano điện</span><span>Keyboard</span>
+                            {% elsif collection_title_downcase contains 'trống' or collection_title_downcase contains 'drum' %}
+                              <span>Trống acoustic</span><span>Trống điện</span><span>Cymbal & phụ kiện</span>
+                            {% elsif collection_title_downcase contains 'ukulele' or collection_title_downcase contains 'violin' %}
+                              <span>Ukulele soprano</span><span>Ukulele concert</span><span>Violin</span><span>Viola & cello</span>
+                            {% else %}
+                              <span>Thêm loại sản phẩm trong metafield custom.subcategories</span>
+                            {% endif %}
+                          </div>
+                        </li>
+                      {% endunless %}
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="service-title">HỖ TRỢ NGƯỜI DÙNG</div>
+                <div class="leftmenu">
+                  <ul>
+                    <li><a href="/pages/dat-lich">Đặt lịch trực tiếp</a></li>
+                    <li><a href="https://app.cowlendar.com/cal/6adc4b10d8be6e942895fbd9/67956542800061">Bảo dưỡng định kỳ</a></li>
+                    <li><a href="/pages/cho-thue">Cho thuê nhạc cụ</a></li>
+                    <li><a href="/collections/khuyen-mai">Khuyến mãi</a></li>
+                    <li><a href="/pages/ho-tro">Hỗ trợ khách hàng</a></li>
+                  </ul>
+                </div>
+              </div><!-- left side -->
+
+              <div class="middle_side">
+                {{content_for_layout}}
+              </div>
+              <div class="right_side">
+                <a href="/pages/tro-ly-ai" class="btn-separator-new nc-ai-assistant">🎸 TRỢ LÝ AI CHỌN ĐÀN</a>
+                <a href="/pages/tach-am-thanh" class="btn-separator-new nc-audio-separator">🎵 TÁCH ÂM THANH NGAY</a>
+                <a href="/pages/tim-nhac-cu#nc-instrument-ai" class="btn-separator-new nc-melody-btn">🎼 NHẬN DẠNG NHẠC CỤ THÔNG QUA ÂM THANH</a>
+                <div class="account-shortcuts">
+                  {% if customer %}
+                    <a href="/account/orders">Lịch sử mua hàng</a>
+                  {% endif %}
+                  <a href="/account/login#recover">Quên / đổi mật khẩu</a>
+                  <a href="/pages/order-tracking">Theo dõi giao hàng</a>
+                </div>
+              </div>
+
+            </div><!-- main content -->
+
+            <div class="clear_both">&nbsp;</div>
+
+            <div class="footer">
+              <p class="footer_text">© {{ "now" | date: "%Y" }} {{ shop.name }}  |  <a href="/pages/ho-tro" style="color:#fff">Liên hệ</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nc-float">
+      <a href="/pages/tro-ly-ai" title="Trợ lý AI chọn đàn">AI</a>
+      <a href="/pages/ho-tro" title="Hỗ trợ khách hàng">Hỗ trợ</a>
+    </div>
+  </body>
+</html>{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% if collection.title != 'Frontpage' && collection.title != 'Songs' && collection.title
+    != 'All products' %}"
+  to: "{% if collection.title != 'Frontpage' %}"
+  position: 2301..2341
+{%- endcomment -%}

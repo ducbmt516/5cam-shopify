@@ -1,0 +1,49 @@
+{%- comment -%}
+  Thẻ sản phẩm dùng chung cho trang chủ, collection, tìm kiếm.
+  Cách gọi: {% include 'product-card' with product %}  (hoặc gán biến card_product)
+{%- endcomment -%}
+{%- assign cp = card_product | default: product -%}
+{%- assign on_sale = false -%}
+{%- assign off_pct = 0 -%}
+{%- if cp.compare_at_price > cp.price -%}
+  {%- assign on_sale = true -%}
+  {%- assign off_pct = cp.compare_at_price | minus: cp.price | times: 100 | divided_by: cp.compare_at_price -%}
+{%- endif -%}
+{%- assign now_s = 'now' | date: '%s' -%}
+{%- assign pub_s = cp.published_at | date: '%s' -%}
+{%- assign age_s = now_s | minus: pub_s -%}
+{%- assign is_new = false -%}
+{%- if age_s < 1209600 -%}{%- assign is_new = true -%}{%- endif -%}
+
+<div class="nc-card">
+  <div class="nc-badges">
+    {% unless cp.available %}<span class="nc-badge out">HẾT HÀNG</span>{% endunless %}
+    {% if on_sale and cp.available %}<span class="nc-badge sale">-{{ off_pct }}%</span>{% endif %}
+    {% if is_new and cp.available %}<span class="nc-badge new">MỚI</span>{% endif %}
+  </div>
+  <div class="nc-side-btns">
+    <button type="button" class="nc-icon-btn" data-nc-wish="{{ cp.handle }}" aria-label="Yêu thích" title="Yêu thích">&#9825;</button>
+  </div>
+
+  <a class="nc-card-img" href="{{ cp.url }}" title="{{ cp.title | escape }}">
+    {% if cp.featured_image %}
+      <img src="{{ cp.featured_image | img_url: '600x600' }}" alt="{{ cp.featured_image.alt | default: cp.title | escape }}" width="300" height="300" loading="lazy">
+    {% endif %}
+  </a>
+
+  <div class="nc-card-name"><a href="{{ cp.url }}">{{ cp.title | escape }}</a></div>
+
+  <div class="nc-card-price">
+    {% if cp.price_varies %}{{ cp.price_min | money }} – {{ cp.price_max | money }}{% else %}{{ cp.price | money }}{% endif %}
+    {% if on_sale %}<s>{{ cp.compare_at_price | money }}</s>{% endif %}
+  </div>
+
+  <div class="nc-card-stock{% unless cp.available %} is-out{% endunless %}">
+    {% if cp.available %}Còn hàng{% else %}Hết hàng{% endif %}
+  </div>
+
+  <div class="nc-card-actions">
+    <a class="nc-btn nc-btn-dark" href="{{ cp.url }}">Chi tiết</a>
+    <button type="button" class="nc-btn nc-btn-ghost" data-nc-compare="{{ cp.handle }}"><span data-label>So sánh</span></button>
+  </div>
+</div>

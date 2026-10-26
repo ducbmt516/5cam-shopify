@@ -1,0 +1,40 @@
+<div class="collection-toolbar">
+  <h1>{% if collection.handle == 'all' %}Tất cả sản phẩm{% else %}{{ collection.title | escape }}{% endif %}</h1>
+
+  <form method="get" action="{{ collection.url }}" class="collection-sort">
+    <label for="CollectionSort">Sắp xếp sản phẩm:</label>
+
+    {% assign active_sort = collection.sort_by | default: collection.default_sort_by %}
+
+    <select id="CollectionSort" name="sort_by" onchange="this.form.submit()">
+      <option value="relevance"{% if active_sort == 'relevance' %} selected="selected"{% endif %}>Mức độ liên quan</option>
+      <option value="title-ascending"{% if active_sort == 'title-ascending' %} selected="selected"{% endif %}>Tên sản phẩm: A–Z</option>
+      <option value="title-descending"{% if active_sort == 'title-descending' %} selected="selected"{% endif %}>Tên sản phẩm: Z–A</option>
+      <option value="price-ascending"{% if active_sort == 'price-ascending' %} selected="selected"{% endif %}>Giá: Thấp đến cao</option>
+      <option value="price-descending"{% if active_sort == 'price-descending' %} selected="selected"{% endif %}>Giá: Cao đến thấp</option>
+      <option value="created-descending"{% if active_sort == 'created-descending' %} selected="selected"{% endif %}>Sản phẩm mới nhất</option>
+    </select>
+  </form>
+</div>
+
+{% paginate collection.products by 12 %}
+
+{% if collection.products.size == 0 %}
+  <div class="nc-empty">Bộ sưu tập này chưa có sản phẩm.</div>
+{% else %}
+  <div class="nc-grid">
+    {% for product in collection.products %}
+      {% include 'product-card' %}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if paginate.pages > 1 %}
+  <nav class="nc-pager" aria-label="Phân trang">
+    {% if paginate.previous %}<a class="nc-btn nc-btn-ghost nc-btn-small" href="{{ paginate.previous.url }}">&larr; Trang trước</a>{% else %}<span class="nc-btn nc-btn-small is-disabled">&larr; Trang trước</span>{% endif %}
+    <span class="nc-pager-info">Trang <b>{{ paginate.current_page }}</b> / {{ paginate.pages }}</span>
+    {% if paginate.next %}<a class="nc-btn nc-btn-dark nc-btn-small" href="{{ paginate.next.url }}">Trang sau &rarr;</a>{% else %}<span class="nc-btn nc-btn-small is-disabled">Trang sau &rarr;</span>{% endif %}
+  </nav>
+{% endif %}
+
+{% endpaginate %}
